@@ -46,6 +46,11 @@ module.exports = {
 
     const userIds = sails.helpers.utils.mapRecords(boardMemberships, 'userId');
     const users = await sails.helpers.users.getMany(userIds);
+    users.forEach((user) => {
+      if (!currentUser.isAdmin && currentUser.id !== inputs.id) {
+        delete user.email;
+      }
+    });
 
     const labels = await sails.helpers.boards.getLabels(board.id);
     const lists = await sails.helpers.boards.getLists(board.id);

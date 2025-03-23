@@ -34,6 +34,11 @@ module.exports = {
       }
     } else {
       user = await sails.helpers.users.getOne(inputs.id);
+      // Patch: If the current user is not an admin and the requested user is not the current user, omit the email
+      const { currentUser } = this.req;
+      if (!currentUser.isAdmin && currentUser.id !== inputs.id) {
+        delete user.email;
+      }
 
       if (!user) {
         throw Errors.USER_NOT_FOUND;
